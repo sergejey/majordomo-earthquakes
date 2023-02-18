@@ -1,0 +1,102 @@
+
+  <!-- Table 'eq_events' edit -->
+  <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+   [#if OK#]
+   <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+   [#endif OK#]
+   [#if ERR#]
+   <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+   [#endif ERR#]
+   <fieldset>
+    [#if ID=""#]
+    <legend><#LANG_NEW_RECORD#></legend>
+    [#endif ID#]
+    <!-- TITLE (varchar) -->
+    <div class="form-group[#if ERR_TITLE#] has-error[#endif#]">
+     <label for="title" class="col-lg-3 control-label">
+      <#LANG_TITLE#>:
+      (*)
+     </label>
+     <div class="col-lg-9"><input id="title" name="title" value="[#TITLE#]" type="text" class="form-control"></div>
+    </div>
+    <!-- LAT (varchar) -->
+    <div class="form-group[#if ERR_LAT#] has-error[#endif#]">
+     <label for="lat" class="col-lg-3 control-label">
+      LAT:
+      (*)
+     </label>
+     <div class="col-lg-9"><input id="lat" name="lat" value="[#LAT#]" type="text" class="form-control"></div>
+    </div>
+    <!-- LON (varchar) -->
+    <div class="form-group[#if ERR_LON#] has-error[#endif#]">
+     <label for="lon" class="col-lg-3 control-label">
+      LON:
+      (*)
+     </label>
+     <div class="col-lg-9"><input id="lon" name="lon" value="[#LON#]" type="text" class="form-control"></div>
+    </div>
+
+    <div class="form-group[#if ERR_RADIUS#] has-error[#endif#]">
+     <label for="radius" class="col-lg-3 control-label">
+      Радиус:
+      (*)
+     </label>
+     <div class="col-lg-9"><input id="radius" name="radius" value="[#RADIUS#]" type="text" class="form-control"></div>
+    </div>
+
+    <!-- MAGNITUDE (varchar) -->
+    <div class="form-group">
+     <label for="min_magnitude" class="col-lg-3 control-label">
+      Минимальная магнитуда:
+     </label>
+     <div class="col-lg-9"><input id="min_magnitude" name="min_magnitude" value="[#MIN_MAGNITUDE#]" type="text" class="form-control"></div>
+    </div>
+
+    <div class="form-group">
+     <label for="alert_message" class="col-lg-3 control-label">
+      Сообщение:
+     </label>
+     <div class="col-lg-9"><input id="alert_message" name="alert_message" value="[#ALERT_MESSAGE#]" type="text" class="form-control"></div>
+    </div>
+
+    <div class="form-group">
+     <label for="alert_level" class="col-lg-3 control-label">
+      Уровень сообщения:
+     </label>
+     <div class="col-lg-9"><input id="alert_level" name="alert_level" value="[#ALERT_LEVEL#]" type="text" class="form-control"></div>
+    </div>
+
+    <div class="form-group">
+     <label for="linked_object" class="col-lg-3 control-label">
+      <#LANG_LINKED_OBJECT#>:
+     </label>
+     <div class="col-lg-9"><input id="linked_object" name="linked_object" value="[#LINKED_OBJECT#]" type="text" class="form-control"></div>
+    </div>
+
+    <div class="form-group">
+     <label for="linked_method" class="col-lg-3 control-label">
+      <#LANG_LINKED_METHOD#>:
+     </label>
+     <div class="col-lg-9"><input id="linked_method" name="linked_method" value="[#LINKED_METHOD#]" type="text" class="form-control"></div>
+    </div>
+
+    [#module name="linkedobject" object_field="linked_object" method_field="linked_method" width="200"#]
+
+    <div class="form-group">
+     <div class="col-lg-offset-3 col-lg-4">
+      [#if ID!=""#]
+      <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
+      [#else ID#]
+      <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+      [#endif ID#]
+      <a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default "><#LANG_CANCEL#></a>
+      <input type="hidden" name="id" value="<#ID#>">
+      <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+      <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+      <input type="hidden" name="mode" value="update">
+      <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+     </div>
+    </div>
+   </fieldset>
+  </form>
+

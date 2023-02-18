@@ -1,0 +1,37 @@
+<ul class="nav nav-tabs">
+    <li[#if DATA_SOURCE=""#] class="active"[#endif#]><a href="?">События</a></li>
+    <li[#if DATA_SOURCE="places"#] class="active"[#endif#]><a href="?data_source=places">Места</a></li>
+</ul>
+&nbsp;
+
+[#if DATA_SOURCE="places"#]
+
+ [#if VIEW_MODE="search_eq_places" || VIEW_MODE=""#]
+ [#inc eq_places_search_admin.html#]
+ [#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="edit_eq_places"#]
+ [#inc eq_places_edit.html#]
+ [#endif VIEW_MODE#]
+
+[#endif#]
+
+[#if DATA_SOURCE=""#]
+[#module name="xray" action="service" cycle="earthquakes"#]
+ <!-- action usual -->
+ <!-- table eq_events search -->
+ [#if VIEW_MODE="search_eq_events" || VIEW_MODE=""#]
+  [#inc eq_events_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table eq_events search -->
+ <!-- table eq_events edit -->
+ [#if VIEW_MODE="edit_eq_events"#]
+   [#inc eq_events_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table eq_events edit -->
+ <!-- table eq_events view --> 
+ [#if VIEW_MODE="view_eq_events"#]
+   [#inc eq_events_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table eq_events view -->
+[#endif#]
