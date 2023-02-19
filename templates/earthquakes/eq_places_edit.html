@@ -22,7 +22,7 @@
     <!-- LAT (varchar) -->
     <div class="form-group[#if ERR_LAT#] has-error[#endif#]">
      <label for="lat" class="col-lg-3 control-label">
-      LAT:
+      <#LANG_LATITUDE#>:
       (*)
      </label>
      <div class="col-lg-9"><input id="lat" name="lat" value="[#LAT#]" type="text" class="form-control"></div>
@@ -30,7 +30,7 @@
     <!-- LON (varchar) -->
     <div class="form-group[#if ERR_LON#] has-error[#endif#]">
      <label for="lon" class="col-lg-3 control-label">
-      LON:
+      <#LANG_LONGITUDE#>:
       (*)
      </label>
      <div class="col-lg-9"><input id="lon" name="lon" value="[#LON#]" type="text" class="form-control"></div>
@@ -38,7 +38,7 @@
 
     <div class="form-group[#if ERR_RADIUS#] has-error[#endif#]">
      <label for="radius" class="col-lg-3 control-label">
-      Радиус:
+      Радиус, км:
       (*)
      </label>
      <div class="col-lg-9"><input id="radius" name="radius" value="[#RADIUS#]" type="text" class="form-control"></div>
@@ -56,12 +56,17 @@
      <label for="alert_message" class="col-lg-3 control-label">
       Сообщение:
      </label>
-     <div class="col-lg-9"><input id="alert_message" name="alert_message" value="[#ALERT_MESSAGE#]" type="text" class="form-control"></div>
+     <div class="col-lg-9">
+      <input id="alert_message" name="alert_message" value="[#ALERT_MESSAGE#]" type="text" class="form-control">
+      <div class="help-block">
+       В тексте можно использовать ключевые слова: %TITLE%, %MAGNITUDE%, %DISTANCE%
+      </div>
+     </div>
     </div>
 
     <div class="form-group">
      <label for="alert_level" class="col-lg-3 control-label">
-      Уровень сообщения:
+      Уровень важности:
      </label>
      <div class="col-lg-9"><input id="alert_level" name="alert_level" value="[#ALERT_LEVEL#]" type="text" class="form-control"></div>
     </div>
@@ -77,7 +82,10 @@
      <label for="linked_method" class="col-lg-3 control-label">
       <#LANG_LINKED_METHOD#>:
      </label>
-     <div class="col-lg-9"><input id="linked_method" name="linked_method" value="[#LINKED_METHOD#]" type="text" class="form-control"></div>
+     <div class="col-lg-9">
+      <input id="linked_method" name="linked_method" value="[#LINKED_METHOD#]" type="text" class="form-control">
+      <div class="help-block">В метод через $params передаются данные события.</div>
+     </div>
     </div>
 
     [#module name="linkedobject" object_field="linked_object" method_field="linked_method" width="200"#]

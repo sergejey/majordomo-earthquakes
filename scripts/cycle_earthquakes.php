@@ -24,20 +24,21 @@ while (1) {
     setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     if ((time() - $latest_check) > $checkEvery) {
         $latest_check = time();
-        $content = getURL('https://www.seismicportal.eu/mtws/api/search?&format=json&downloadAsFile=false&orderby=time-desc&offset=0&limit=10');
+        $content = getURL('https://www.seismicportal.eu/fdsnws/event/1/query?limit=10&format=json');
         if ($content != '') {
             $data = json_decode($content, true);
+            $data = $data['features'];
             if (is_array($data)) {
                 $total = count($data);
                 for ($i = 0; $i < $total; $i++) {
-                    $ev_unid = $data[$i]['ev_unid'];
+                    $ev_unid = $data[$i]['properties']['unid'];
                     if (isset($seenEvents[$ev_unid])) continue;
-                    $ev_longitude = $data[$i]['ev_longitude'];
-                    $ev_latitude = $data[$i]['ev_latitude'];
-                    $ev_mag_value = $data[$i]['ev_mag_value'];
-                    $mt_region = $data[$i]['mt_region'];
-                    $ev_event_time = strtotime($data[$i]['ev_event_time']);
-                    echo "$ev_unid ($ev_latitude : $ev_longitude) $ev_mag_value " . date('Y-m-d H:i:s', $ev_event_time) . " (" . $data[$i]['ev_event_time'] . ")\n";
+                    $ev_longitude = $data[$i]['properties']['lon'];
+                    $ev_latitude = $data[$i]['properties']['lat'];
+                    $ev_mag_value = $data[$i]['properties']['mag'];
+                    $mt_region = $data[$i]['properties']['flynn_region'];
+                    $ev_event_time = strtotime($data[$i]['properties']['time']);
+                    echo "$ev_unid $mt_region ($ev_latitude : $ev_longitude) $ev_mag_value " . date('Y-m-d H:i:s', $ev_event_time) . "\n";
 
                     callAPI('/api/module/earthquakes', 'GET', array(
                             'ev_unid' => $ev_unid,

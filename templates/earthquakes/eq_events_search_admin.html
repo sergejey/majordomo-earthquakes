@@ -23,30 +23,24 @@
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_eq_events" style="padding:0px" class="form">
 <table  align=center class="table">
+ <thead>
+ <tr>
+  <th>ID</th>
+  <th>Регион</th>
+  <th>Координаты</th>
+  <th>Магнитуда</th>
+  <th>Место</th>
+  <th><#LANG_ADDED#></th>
+  <th>&nbsp;</th>
+ </tr>
+ </thead>
 <tbody>
 [#begin RESULT#]
 <tr [#if PLACE_ID!="0"#]class="alert-danger"[#endif#]>
- <td
-  >
-  <b>
-   [#TITLE#]
-  </a></b>
- </td>
- <td
-   >
-  [#if LAT!=""#]
-   [#LAT#]
-  [#else#]
-   &nbsp;
-  [#endif#]
- </td>
- <td
-   >
-  [#if LON!=""#]
-   [#LON#]
-  [#else#]
-   &nbsp;
-  [#endif#]
+ <td><a href="https://seismicportal.eu/eventdetails.html?unid=[#EV_UNID#]" target="_blank">[#EV_UNID#]</a></td>
+ <td>[#TITLE#]</b></td>
+ <td>
+   [#LAT#]:[#LON#]
  </td>
  <td
    >

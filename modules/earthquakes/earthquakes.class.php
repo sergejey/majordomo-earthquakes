@@ -224,49 +224,64 @@ class earthquakes extends module
     function api($params)
     {
         if ($params['ev_unid']) {
-            $event = SQLSelectOne("SELECT ID FROM eq_events WHERE EV_UNID='" . $params['ev_unid'] . "'");
-            if ($event['ID']) return;
-            $event = array();
+            $event = SQLSelectOne("SELECT * FROM eq_events WHERE EV_UNID='" . $params['ev_unid'] . "'");
             $event['EV_UNID'] = $params['ev_unid'];
             $event['LAT'] = $params['ev_latitude'];
             $event['LON'] = $params['ev_longitude'];
             $event['MAGNITUDE'] = $params['ev_mag_value'];
             $event['ADDED'] = date('Y-m-d H:i:s', $params['ev_event_time']);
             $event['TITLE'] = $params['mt_region'];
-            $event['ID'] = SQLInsert('eq_events', $event);
+            if ($event['ID']) {
+                SQLUpdate('eq_events', $event);
+            } else {
+                $event['ID'] = SQLInsert('eq_events', $event);
+            }
+
+            if ($event['PLACE_ID']) {
+                DebMes("updating " . $event['TITLE'] . " (".$event['EV_UNID']."): already added to place " . $event['PLACE_ID'], 'earthquakes');
+                return;
+            }
 
             $places = SQLSelect("SELECT * FROM eq_places");
             $total = count($places);
             for ($i = 0; $i < $total; $i++) {
                 $place_magnitude = $places[$i]['MIN_MAGNITUDE'];
                 if ($place_magnitude > $event['MAGNITUDE']) {
-                    //DebMes("skipping ".$event['TITLE'].": ".$event['MAGNITUDE']." < $place_magnitude",'earthquakes');
+                    DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): " . $event['MAGNITUDE'] . " < $place_magnitude", 'earthquakes');
                     continue;
                 }
                 $place_lat = $places[$i]['LAT'];
                 $place_lon = $places[$i]['LON'];
 
-                $distance = round($this->calculateTheDistance($place_lat, $place_lon, $event['LAT'], $event['LON']) / 1000, 2);
+                $distance = round($this->calculateTheDistance($place_lat, $place_lon, $event['LAT'], $event['LON']) / 1000);
                 $place_radius = $places[$i]['RADIUS'];
                 if ($distance <= $place_radius) {
-                    DebMes("alert ".$event['TITLE'].": $distance < $place_radius",'earthquakes');
+                    DebMes("alert " . $event['TITLE'] . " (".$event['EV_UNID']."): $distance < $place_radius", 'earthquakes');
 
                     $event['PLACE_ID'] = $places[$i]['ID'];
-                    SQLUpdate('eq_events',$event);
+                    SQLUpdate('eq_events', $event);
 
-                    $time_passed = time()-strtotime($event['ADDED']); // seconds
-                    if ($time_passed > 30 * 60) { // если старше 30 минут, то не интересно
+                    $time_passed = time() - strtotime($event['ADDED']); // seconds
+                    if ($time_passed > 60 * 60) { // если старше 60 минут, то не интересно
+                        DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): timeout ($time_passed)", 'earthquakes');
                         continue;
                     }
                     //todo: реагировать на событие один раз а не несколько раз если попадает несколько мест
 
-                    SQLExec("UPDATE eq_places SET UPDATED='".date('Y-m-d H:i:s')."' WHERE ID=".$places[$i]['ID']);
+                    SQLExec("UPDATE eq_places SET UPDATED='" . date('Y-m-d H:i:s') . "' WHERE ID=" . $places[$i]['ID']);
+
+                    $data = $event;
+                    $data['DISTANCE'] = $distance;
 
                     if ($places[$i]['ALERT_MESSAGE']) {
-                        say($places[$i]['ALERT_MESSAGE'], $places[$i]['ALERT_LEVEL']);
+                        $message = $places[$i]['ALERT_MESSAGE'];
+                        foreach ($data as $k => $v) {
+                            $message = str_replace('%' . $k . '%', $v, $message);
+                        }
+                        say($message, $places[$i]['ALERT_LEVEL']);
                     }
                     if ($places[$i]['LINKED_OBJECT'] && $places[$i]['LINKED_METHOD']) {
-                        callMethod($places[$i]['LINKED_OBJECT'].'.'.$places[$i]['LINKED_METHOD']);
+                        callMethod($places[$i]['LINKED_OBJECT'] . '.' . $places[$i]['LINKED_METHOD'], $data);
                     }
                 } else {
                     //DebMes("no alert ".$event['TITLE'].": $distance > $place_radius",'earthquakes');
