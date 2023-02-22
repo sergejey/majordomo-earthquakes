@@ -32,10 +32,12 @@ while (1) {
                 $total = count($data);
                 for ($i = 0; $i < $total; $i++) {
                     $ev_unid = $data[$i]['properties']['unid'];
-                    if (isset($seenEvents[$ev_unid])) continue;
+                    $ev_mag_value = $data[$i]['properties']['mag'];
+                    if (isset($seenEvents[$ev_unid]) && $seenEvents[$ev_unid]==$ev_mag_value) continue;
+                    $seenEvents[$ev_unid] = $ev_mag_value;
+                    
                     $ev_longitude = $data[$i]['properties']['lon'];
                     $ev_latitude = $data[$i]['properties']['lat'];
-                    $ev_mag_value = $data[$i]['properties']['mag'];
                     $mt_region = $data[$i]['properties']['flynn_region'];
                     $ev_event_time = strtotime($data[$i]['properties']['time']);
                     echo "$ev_unid $mt_region ($ev_latitude : $ev_longitude) $ev_mag_value " . date('Y-m-d H:i:s', $ev_event_time) . "\n";
@@ -49,8 +51,6 @@ while (1) {
                             'mt_region' => $mt_region
                         )
                     );
-
-                    $seenEvents[$ev_unid] = 1;
                 }
             }
         }
