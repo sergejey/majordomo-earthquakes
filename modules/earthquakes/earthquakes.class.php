@@ -231,13 +231,13 @@ class earthquakes extends module
             $event['MAGNITUDE'] = $params['ev_mag_value'];
             $event['ADDED'] = date('Y-m-d H:i:s', $params['ev_event_time']);
             $event['TITLE'] = $params['mt_region'];
-            if ($event['ID']) {
+            if (isset($event['ID'])) {
                 SQLUpdate('eq_events', $event);
             } else {
                 $event['ID'] = SQLInsert('eq_events', $event);
             }
 
-            if ($event['PLACE_ID']) {
+            if (isset($event['PLACE_ID'])) {
                 DebMes("updating " . $event['TITLE'] . " (".$event['EV_UNID']."): already added to place " . $event['PLACE_ID'], 'earthquakes');
                 return;
             }
