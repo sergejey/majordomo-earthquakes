@@ -231,14 +231,14 @@ class earthquakes extends module
             $event['MAGNITUDE'] = $params['ev_mag_value'];
             $event['ADDED'] = date('Y-m-d H:i:s', $params['ev_event_time']);
             $event['TITLE'] = $params['mt_region'];
-            if (isset($event['ID'])) {
+            if ($event['ID']) {
                 SQLUpdate('eq_events', $event);
             } else {
                 $event['ID'] = SQLInsert('eq_events', $event);
             }
 
-            if (isset($event['PLACE_ID'])) {
-                DebMes("updating " . $event['TITLE'] . " (".$event['EV_UNID']."): already added to place " . $event['PLACE_ID'], 'earthquakes');
+            if ($event['PLACE_ID']) {
+                //DebMes("updating " . $event['TITLE'] . " (".$event['EV_UNID']."): already added to place " . $event['PLACE_ID'], 'earthquakes');
                 return;
             }
 
@@ -247,7 +247,7 @@ class earthquakes extends module
             for ($i = 0; $i < $total; $i++) {
                 $place_magnitude = $places[$i]['MIN_MAGNITUDE'];
                 if ($place_magnitude > $event['MAGNITUDE']) {
-                    DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): " . $event['MAGNITUDE'] . " < $place_magnitude", 'earthquakes');
+                    //DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): " . $event['MAGNITUDE'] . " < $place_magnitude", 'earthquakes');
                     continue;
                 }
                 $place_lat = $places[$i]['LAT'];
@@ -263,7 +263,7 @@ class earthquakes extends module
 
                     $time_passed = time() - strtotime($event['ADDED']); // seconds
                     if ($time_passed > 60 * 60) { // если старше 60 минут, то не интересно
-                        DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): timeout ($time_passed)", 'earthquakes');
+                        //DebMes("skipping " . $event['TITLE'] . " (".$event['EV_UNID']."): timeout ($time_passed)", 'earthquakes');
                         continue;
                     }
                     //todo: реагировать на событие один раз а не несколько раз если попадает несколько мест
